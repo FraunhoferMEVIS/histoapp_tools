@@ -47,7 +47,7 @@ def main():
             if endPx[0] > extent[0]: endPx[0]
             imagefile = getPatch(project, image, serverLevel, z, startPx, endPx, imagefile)
 
-    imagefile.tiffsave("{}_{}_{}_out_vips.tif".format(image,level,z), tile=True, pyramid=True, compression="jpeg", bigtiff=True, rgbjpeg=True)
+    imagefile.tiffsave("{}_{}_{}.tif".format(image,level,z), tile=True, pyramid=True, compression="jpeg", bigtiff=True, rgbjpeg=True)
 
 if __name__ == "__main__":
     main()
