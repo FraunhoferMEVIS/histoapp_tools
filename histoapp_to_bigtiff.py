@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Copyright (c) Fraunhofer MEVIS, Germany. All rights reserved.
+
 # Downloads image patches from a webserver and sequentially writes them into a bigtiff file.
 # Note that libvips is required and can be installed using "apt install libvips" (Ubuntu) or "brew install vips" (Mac OS)
 
