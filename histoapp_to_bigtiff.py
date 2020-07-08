@@ -21,7 +21,7 @@ z=0
 userCredentials=('user','password')
 
 def setupBigTiff(project, imageName, level):
-    metadata = requests.get('{}/api/v1//projects/{}/images/{}'.format(baseurl, project, imageName), auth = userCredentials).json()
+    metadata = requests.get('{}/api/v1/projects/{}/images/{}'.format(baseurl, project, imageName), auth = userCredentials).json()
     serverLevel = len(metadata["voxelsizes"])-level-1
     extent = metadata["ml_extent"][level]
     imagefile = pyvips.Image.black(extent[0],extent[1],bands=3)
