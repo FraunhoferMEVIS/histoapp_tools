@@ -24,9 +24,10 @@ def setupBigTiff(project, imageName, level):
     metadata = requests.get('{}/api/v1/projects/{}/images/{}'.format(baseurl, project, imageName), auth = userCredentials).json()
     serverLevel = len(metadata["voxelsizes"])-level-1
     extent = metadata["ml_extent"][level]
+    voxelsize = [metadata["voxelsizes"][serverLevel]['x'], metadata["voxelsizes"][serverLevel]['y']]
     imagefile = pyvips.Image.black(extent[0],extent[1],bands=3)
     print("Downloading {} at resolution {}x{}...".format(imageName,extent[0],extent[1]))
-    return imagefile, serverLevel, extent
+    return imagefile, serverLevel, extent, voxelsize
 
 def getPatch(project, image, level, z, startPx, endPx, imagefile):
         result = requests.get('{}/api/v1/projects/{}/images/{}/region/{}/{}/start/{}/{}/end/{}/{}'.format(baseurl, project, image, level, z, startPx[0], startPx[1], endPx[0]-1, endPx[1]-1), auth = userCredentials)
@@ -40,8 +41,8 @@ def getPatch(project, image, level, z, startPx, endPx, imagefile):
         return imagefile
 
 def main():
-    imagefile, serverLevel, extent = setupBigTiff(project, image, level)
-
+    imagefile, serverLevel, extent, voxelsize = setupBigTiff(project, image, level)
+    voxelsize = (1.0/(np.array(voxelsize)/1000000)).tolist() # µm/pixel to pixel/mm
     for y in tqdm.trange(0, extent[1], patch_size, desc="Rows   "):
         for x in tqdm.trange(0, extent[0], patch_size, desc="Columns", leave=False):
             startPx=(x,y)
@@ -49,7 +50,7 @@ def main():
             if endPx[0] > extent[0]: endPx[0]
             imagefile = getPatch(project, image, serverLevel, z, startPx, endPx, imagefile)
 
-    imagefile.tiffsave("{}_{}_{}.tif".format(image,level,z), tile=True, pyramid=True, compression="jpeg", bigtiff=True, rgbjpeg=True)
+    imagefile.tiffsave("{}_{}_{}.tif".format(image,level,z), xres=voxelsize[0], yres=voxelsize[1], tile=True, pyramid=True, compression="jpeg", bigtiff=True, rgbjpeg=True)
 
 if __name__ == "__main__":
     main()
