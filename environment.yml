@@ -1,0 +1,15 @@
+name: vips
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3
+  - numpy
+  - notebook
+  - pyvips
+  - requests
+  - pillow
+  - tqdm
+
+
+# conda env update -f environment.yml
