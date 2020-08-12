@@ -10,6 +10,7 @@ dependencies:
   - requests
   - pillow
   - tqdm
+  - jpeg=9c
 
 
 # conda env update -f environment.yml
