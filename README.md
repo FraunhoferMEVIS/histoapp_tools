@@ -7,10 +7,19 @@ Copyright (c) Fraunhofer MEVIS, Germany. All rights reserved.
 
 ## Histo.app to bigtiff converter
 
+`histoapp_to_bigtiff.py`
+
 This script reads image data from histo.app and converts it to a bigtiff file on the fly.
 
 ## Histo.app to patches converter
 
+`histoapp_to_patches.ipynb`
+
 This script reads image data from histo.app and returns it as pairs of registered patches.
 
+## Image to BigTiff converter
+
+`convert_to_bigtiff.py`
+
+This scripts converts (whole slide) images to bigtiff files that are compatible to histo.app.
 
