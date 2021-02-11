@@ -22,7 +22,11 @@ userCredentials=('user','password')
 
 def setupBigTiff(project, imageName, level):
     metadata = requests.get('{}/api/v1/projects/{}/images/{}'.format(baseurl, project, imageName), auth = userCredentials).json()
+    try:
     serverLevel = len(metadata["voxelsizes"])-level-1
+    except KeyError:
+        if metadata['status'] == "unauthenticated":
+            raise Exception("Username or password seems to be wrong.")
     extent = metadata["ml_extent"][level]
     voxelsize = [metadata["voxelsizes"][serverLevel]['x'], metadata["voxelsizes"][serverLevel]['y']]
     imagefile = pyvips.Image.black(extent[0],extent[1],bands=3)
