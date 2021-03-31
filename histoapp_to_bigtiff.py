@@ -5,11 +5,14 @@
 # Downloads image patches from a webserver and sequentially writes them into a bigtiff file.
 # Note that libvips is required and can be installed using "apt install libvips" (Ubuntu) or "brew install vips" (Mac OS)
 
+import io
+import json
+
 import numpy as np
-import requests
-from PIL import Image
-import io, json, tqdm
 import pyvips
+import requests
+import tqdm
+from PIL import Image
 
 # adapt as needed
 baseurl="https://histoapp.mevis.fraunhofer.de"

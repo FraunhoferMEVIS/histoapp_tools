@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "histoapp_tools"
-version = "0.1.0"
+version = "0.2.0"
 description = "Tools to interact with histo.app."
 authors = ["Johannes Lotz <johannes.lotz@mevis.fraunhofer.de>"]
 license = "MIT"
