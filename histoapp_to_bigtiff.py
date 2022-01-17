@@ -26,26 +26,26 @@ userCredentials=('user','password')
 def setupBigTiff(project, imageName, level):
     metadata = requests.get('{}/api/v1/projects/{}/images/{}'.format(baseurl, project, imageName), auth = userCredentials).json()
     try:
-    serverLevel = len(metadata["voxelsizes"])-level-1
+        serverLevel = len(metadata["voxelsizes"])-level-1
     except KeyError:
         if metadata['status'] == "unauthenticated":
             raise Exception("Username or password seems to be wrong.")
-    extent = metadata["ml_extent"][level]
+    extent = metadata["extent"]
     voxelsize = [metadata["voxelsizes"][serverLevel]['x'], metadata["voxelsizes"][serverLevel]['y']]
     imagefile = pyvips.Image.black(extent[0],extent[1],bands=3)
     print("Downloading {} at resolution {}x{}...".format(imageName,extent[0],extent[1]))
     return imagefile, serverLevel, extent, voxelsize
 
 def getPatch(project, image, level, z, startPx, endPx, imagefile):
-        result = requests.get('{}/api/v1/projects/{}/images/{}/region/{}/{}/start/{}/{}/end/{}/{}'.format(baseurl, project, image, level, z, startPx[0], startPx[1], endPx[0]-1, endPx[1]-1), auth = userCredentials)
-        image = Image.open(io.BytesIO(result.content))
-        imgNP =  np.array(image)
-        image.close()
-        w, h, channels = imgNP.shape
-        imgNP = imgNP.reshape(w * h * channels)
-        vips_patch = pyvips.Image.new_from_memory(imgNP.data, h, w, bands=channels, format="uchar")
-        imagefile = imagefile.draw_image(vips_patch, startPx[0], startPx[1])
-        return imagefile
+    result = requests.get('{}/api/v1/projects/{}/images/{}/region/{}/start/{}/{}/{}/size/{}/{}'.format(baseurl, project, image, level, startPx[0], startPx[1], z, endPx[0]-startPx[0], endPx[1]-startPx[1]), auth = userCredentials)
+    image = Image.open(io.BytesIO(result.content))
+    imgNP =  np.array(image)
+    image.close()
+    w, h, channels = imgNP.shape
+    imgNP = imgNP.reshape(w * h * channels)
+    vips_patch = pyvips.Image.new_from_memory(imgNP.data, h, w, bands=channels, format="uchar")
+    imagefile = imagefile.draw_image(vips_patch, startPx[0], startPx[1])
+    return imagefile
 
 def main():
     imagefile, serverLevel, extent, voxelsize = setupBigTiff(project, image, level)
