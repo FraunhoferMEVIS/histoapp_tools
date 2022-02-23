@@ -43,7 +43,7 @@ def getPatch(project, image, level, z, startPx, endPx, imagefile):
     url = '{}/api/v1/projects/{}/images/{}/region/{}/start/{}/{}/{}/size/{}/{}'.format(baseurl, project, image, level, startPx[0], startPx[1], z, endPx[0]-startPx[0], endPx[1]-startPx[1])
     result = requests.get(url, auth = userCredentials)
     try:
-    image = Image.open(io.BytesIO(result.content))
+        image = Image.open(io.BytesIO(result.content))
     except Exception as e:
         print(url)
         print(result)
@@ -54,7 +54,7 @@ def getPatch(project, image, level, z, startPx, endPx, imagefile):
     w, h, channels = imgNP.shape
     imgNP = imgNP.reshape(w * h * channels)
     vips_patch = pyvips.Image.new_from_memory(imgNP.data, h, w, bands=channels, format="uchar")
-    imagefile = imagefile.draw_image(vips_patch, startPx[0], startPx[1])
+    imagefile = imagefile.insert(vips_patch, startPx[0], startPx[1])
     return imagefile
 
 def main():
